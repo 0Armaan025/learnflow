@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:learnflow/common/button/custom_continue_button.dart';
+import 'package:learnflow/features/authentication/screens/signup/signup_screen.dart';
 import 'package:learnflow/utils/pallete.dart';
+import 'package:learnflow/utils/utils.dart';
 import 'package:lottie/lottie.dart';
 
 class OnBoardingScreen2 extends StatefulWidget {
@@ -85,14 +87,16 @@ class OnBoardingScreen2State extends State<OnBoardingScreen2> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Lottie.asset('assets/lottie/onboarding_1.json'),
+                  child: Lottie.asset('assets/lottie/onboarding_2.json'),
                 ),
               ),
               const SizedBox(
                 height: 35,
               ),
               CustomContinueButton(
-                onPressed: () {},
+                onPressed: () {
+                  moveScreen(context, SignUpScreen());
+                },
                 text: "Continue ->",
               ),
             ],
