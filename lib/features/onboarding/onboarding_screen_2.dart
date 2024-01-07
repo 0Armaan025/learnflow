@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:learnflow/common/button/custom_continue_button.dart';
-import 'package:learnflow/features/onboarding/onboarding_screen_2.dart';
 import 'package:learnflow/utils/pallete.dart';
-import 'package:learnflow/utils/utils.dart';
 import 'package:lottie/lottie.dart';
 
-class OnBoardingScreen extends StatefulWidget {
-  const OnBoardingScreen({super.key});
+class OnBoardingScreen2 extends StatefulWidget {
+  const OnBoardingScreen2({super.key});
 
   @override
-  State<OnBoardingScreen> createState() => OnBoardingScreenState();
+  State<OnBoardingScreen2> createState() => OnBoardingScreen2State();
 }
 
-class OnBoardingScreenState extends State<OnBoardingScreen> {
+class OnBoardingScreen2State extends State<OnBoardingScreen2> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -57,7 +55,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
               ),
               Center(
                 child: Text(
-                  "Reverse Teaching",
+                  "Interactive learning",
                   style: GoogleFonts.poppins(
                     color: Pallete().headlineTextColor,
                     fontSize: 32,
@@ -70,7 +68,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: Center(
                   child: Text(
-                    "Reverse teaching helps students to teach AI the concepts and then the AI will validate if it was wrong or right!",
+                    "Features like summarises, quizes and flash cards generation help students learn in a better way!",
                     style: GoogleFonts.headlandOne(
                       color: Pallete().paragraphTextColor,
                     ),
@@ -94,9 +92,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
                 height: 35,
               ),
               CustomContinueButton(
-                onPressed: () {
-                  moveScreen(context, const OnBoardingScreen2());
-                },
+                onPressed: () {},
                 text: "Continue ->",
               ),
             ],
