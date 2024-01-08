@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "31332000121",
+    "project_id": "learnflow-00d",
+    "storage_bucket": "learnflow-00d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:31332000121:android:f5404e4a5e293fe2978fa8",
+        "android_client_info": {
+          "package_name": "com.example.learnflow"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLPpyaWA5C7dl3gIL0l9B3Fmtc_vH8ZFc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
