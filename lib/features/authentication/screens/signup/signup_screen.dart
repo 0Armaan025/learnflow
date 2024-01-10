@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:learnflow/common/button/custom_signup_button.dart';
 import 'package:learnflow/common/text_field/custom_text_field.dart';
+import 'package:learnflow/features/authentication/models/user.dart';
+import 'package:learnflow/features/authentication/notifiers/auth_notifier.dart'
+    as providerContext;
 import 'package:learnflow/features/authentication/screens/login/login_screen.dart';
 import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
 
 import '../../../../common/constants/constants.dart';
 
-class SignUpScreen extends StatefulWidget {
-  const SignUpScreen({super.key});
-
-  @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
-}
-
-class _SignUpScreenState extends State<SignUpScreen> {
+class SignUpScreen extends ConsumerWidget {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -23,16 +20,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
       TextEditingController();
 
   @override
-  void dispose() {
-    super.dispose();
-    _nameController.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-    _confirmPasswordController.dispose();
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.read(providerContext.authNotifierProvider.notifier);
 
-  @override
-  Widget build(BuildContext context) {
+    Future<void> handleSignUp() async {
+      try {
+        final name = _nameController.text;
+        final email = _emailController.text;
+
+        if (_passwordController.text == _confirmPasswordController.text) {
+          final password = _passwordController.text;
+          UserModel model = UserModel(
+              name: name,
+              email: email,
+              password: password,
+              profileImageUrl: '',
+              uid: '');
+
+          await notifier.signUp(context: context, model: model);
+        } else {
+          showSnackBar(context, "Passwords do not match");
+        }
+      } catch (e) {
+        showSnackBar(context, e.toString());
+      }
+    }
+
     return Scaffold(
       backgroundColor: Pallete().bgColor,
       body: SingleChildScrollView(
@@ -71,6 +84,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               child: IconButton(
                                 onPressed: () {
                                   pickImage(context);
+                                  showSnackBar(
+                                      context, "The image has been chosen");
                                 },
                                 icon: Icon(Icons.add_a_photo),
                               ),
@@ -150,7 +165,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               Center(
                 child: CustomSignUpButton(
                   text: 'Sign up',
-                  onPressed: () {},
+                  onPressed: () {
+                    handleSignUp();
+                  },
                 ),
               ),
             ],
