@@ -43,6 +43,8 @@ dependencies:
   firebase_auth: ^4.16.0
   firebase_storage: ^11.6.0
   flutter_riverpod: ^2.4.9
+  js: ^0.6.7
+  speech_to_text: ^6.5.1
 
 dev_dependencies:
   flutter_test:

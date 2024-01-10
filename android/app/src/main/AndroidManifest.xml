@@ -1,4 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <!-- 2. To overcome bind to recognition service failed issue -->
+    <queries>
+        <package android:name="com.google.android.googlequicksearchbox"/>
+    </queries>
+
     <application
         android:label="learnflow"
         android:name="${applicationName}"
