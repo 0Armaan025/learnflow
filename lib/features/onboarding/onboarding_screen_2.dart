@@ -27,27 +27,37 @@ class OnBoardingScreen2 extends ConsumerWidget {
               const SizedBox(
                 height: 20,
               ),
-              Container(
-                margin: const EdgeInsets.only(right: 12),
-                width: double.infinity,
-                alignment: Alignment.centerRight,
+              InkWell(
+                onTap: () {
+                  moveScreen(
+                      context,
+                      firebaseAuth.currentUser != null
+                          ? HomeScreen()
+                          : SignUpScreen(),
+                      isPushReplacement: true);
+                },
                 child: Container(
-                  width: size.width * 0.22,
-                  height: size.height * 0.04,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: Pallete().headlineTextColor,
-                      width: 1,
+                  margin: const EdgeInsets.only(right: 12),
+                  width: double.infinity,
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    width: size.width * 0.22,
+                    height: size.height * 0.04,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Pallete().headlineTextColor,
+                        width: 1,
+                      ),
                     ),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Skip",
-                    style: GoogleFonts.roboto(
-                      color: Colors.black,
-                      fontSize: 16,
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Skip",
+                      style: GoogleFonts.roboto(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),

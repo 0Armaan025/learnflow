@@ -6,6 +6,10 @@ import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../common/constants/constants.dart';
+import '../authentication/screens/signup/signup_screen.dart';
+import '../home/home_screen.dart';
+
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({super.key});
 
@@ -27,27 +31,37 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Container(
-                margin: const EdgeInsets.only(right: 12),
-                width: double.infinity,
-                alignment: Alignment.centerRight,
+              InkWell(
+                onTap: () {
+                  moveScreen(
+                      context,
+                      firebaseAuth.currentUser != null
+                          ? const HomeScreen()
+                          : SignUpScreen(),
+                      isPushReplacement: true);
+                },
                 child: Container(
-                  width: size.width * 0.22,
-                  height: size.height * 0.04,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: Pallete().headlineTextColor,
-                      width: 1,
+                  margin: const EdgeInsets.only(right: 12),
+                  width: double.infinity,
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                    width: size.width * 0.22,
+                    height: size.height * 0.04,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[300],
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: Pallete().headlineTextColor,
+                        width: 1,
+                      ),
                     ),
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                    "Skip",
-                    style: GoogleFonts.roboto(
-                      color: Colors.black,
-                      fontSize: 16,
+                    alignment: Alignment.center,
+                    child: Text(
+                      "Skip",
+                      style: GoogleFonts.roboto(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
