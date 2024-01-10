@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:learnflow/common/button/custom_signup_button.dart';
 import 'package:learnflow/common/text_field/custom_text_field.dart';
+import 'package:learnflow/features/authentication/notifiers/auth_notifier.dart'
+    as providerContext;
+import 'package:learnflow/features/authentication/models/user.dart';
 import 'package:learnflow/features/authentication/screens/signup/signup_screen.dart';
 import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
@@ -9,26 +13,27 @@ import 'package:lottie/lottie.dart';
 
 import '../../../../common/constants/constants.dart';
 
-class LogInScreen extends StatefulWidget {
-  const LogInScreen({super.key});
-
-  @override
-  State<LogInScreen> createState() => _LogInScreenState();
-}
-
-class _LogInScreenState extends State<LogInScreen> {
+class LogInScreen extends ConsumerWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   @override
-  void dispose() {
-    super.dispose();
-    _emailController.dispose();
-    _passwordController.dispose();
-  }
+  Widget build(BuildContext context, WidgetRef ref) {
+    final notifier = ref.read(providerContext.authNotifierProvider.notifier);
 
-  @override
-  Widget build(BuildContext context) {
+    Future<void> handleLogIn() async {
+      try {
+        final email = _emailController.text;
+
+        final password = _passwordController.text;
+
+        await notifier.logIn(
+            context: context, email: email, password: password);
+      } catch (e) {
+        showSnackBar(context, e.toString());
+      }
+    }
+
     return Scaffold(
       backgroundColor: Pallete().bgColor,
       body: SingleChildScrollView(
@@ -121,7 +126,9 @@ class _LogInScreenState extends State<LogInScreen> {
               Center(
                 child: CustomSignUpButton(
                   text: 'Log in',
-                  onPressed: () {},
+                  onPressed: () {
+                    handleLogIn();
+                  },
                 ),
               ),
               const SizedBox(height: 20),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:learnflow/common/constants/constants.dart';
 import 'package:learnflow/features/authentication/models/user.dart';
+import 'package:learnflow/features/home/home_screen.dart';
 import 'package:learnflow/utils/utils.dart';
 
 final authProvider = Provider<AuthRepository>((ref) => AuthRepository());
@@ -22,6 +23,7 @@ class AuthRepository {
         if (user != null) {
           await _storeUserData(user.uid, model);
         }
+        moveScreen(context, HomeScreen(), isPushReplacement: true);
         return user;
       });
     } catch (e) {
@@ -40,7 +42,7 @@ class AuthRepository {
           .signInWithEmailAndPassword(email: email, password: password)
           .then((value) async {
         User? user = firebaseAuth.currentUser;
-
+        moveScreen(context, HomeScreen(), isPushReplacement: true);
         return user;
       });
     } catch (e) {

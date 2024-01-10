@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:learnflow/common/button/custom_continue_button.dart';
+import 'package:learnflow/common/constants/constants.dart';
+import 'package:learnflow/features/authentication/notifiers/auth_notifier.dart'
+    as providerContext;
 import 'package:learnflow/features/authentication/screens/signup/signup_screen.dart';
+import 'package:learnflow/features/home/home_screen.dart';
 import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
 import 'package:lottie/lottie.dart';
 
-class OnBoardingScreen2 extends StatefulWidget {
-  const OnBoardingScreen2({super.key});
-
+class OnBoardingScreen2 extends ConsumerWidget {
   @override
-  State<OnBoardingScreen2> createState() => OnBoardingScreen2State();
-}
-
-class OnBoardingScreen2State extends State<OnBoardingScreen2> {
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final size = MediaQuery.of(context).size;
+
+    final authState = ref.watch(providerContext.authNotifierProvider);
 
     return Scaffold(
       backgroundColor: Pallete().bgColor,
@@ -95,7 +95,12 @@ class OnBoardingScreen2State extends State<OnBoardingScreen2> {
               ),
               CustomContinueButton(
                 onPressed: () {
-                  moveScreen(context, SignUpScreen());
+                  moveScreen(
+                      context,
+                      firebaseAuth.currentUser != null
+                          ? HomeScreen()
+                          : SignUpScreen(),
+                      isPushReplacement: true);
                 },
                 text: "Continue ->",
               ),

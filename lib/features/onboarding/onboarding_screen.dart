@@ -95,7 +95,7 @@ class OnBoardingScreenState extends State<OnBoardingScreen> {
               ),
               CustomContinueButton(
                 onPressed: () {
-                  moveScreen(context, const OnBoardingScreen2());
+                  moveScreen(context, OnBoardingScreen2());
                 },
                 text: "Continue ->",
               ),
