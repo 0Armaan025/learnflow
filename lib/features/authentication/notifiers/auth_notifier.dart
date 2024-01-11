@@ -30,8 +30,8 @@ class AuthNotifier extends StateNotifier<AsyncValue<User?>> {
     required BuildContext context,
     required String email,
     required String password,
-  }) {
-    return AuthRepository()
+  }) async {
+    await AuthRepository()
         .logIn(context: context, email: email, password: password);
     checkAuthStatus();
   }

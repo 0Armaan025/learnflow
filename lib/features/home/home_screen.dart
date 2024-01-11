@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:math';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:learnflow/utils/pallete.dart';
@@ -8,8 +10,7 @@ import 'package:lottie/lottie.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
-import 'package:js/js.dart' as js;
-import 'package:js/js_util.dart' as js_util;
+import 'package:http/http.dart' as http;
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,15 +19,39 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-@js.JSExport()
 class _HomeScreenState extends State<HomeScreen> {
   SpeechToText _speechToText = SpeechToText();
   bool _speechEnabled = false;
   String _lastWords = '';
-  final _streamController = 
-  String _textQuery = '';
 
-  List<String> chatHistory = [];
+  Future<void> sendPrompt(String prompt) async {
+    final dio = Dio();
+
+    try {
+      final response = await dio.post(
+        'http://localhost:80/textPrompt',
+        options: Options(
+          headers: <String, String>{
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+        data: jsonEncode(<String, String>{"prompt": prompt}),
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.data);
+        final botResponse = responseData['bot'];
+
+        // Handle the response from the server (e.g., display it to the user)
+        print("Bot Response: $botResponse");
+      } else {
+        print("Request failed with status: ${response.statusCode}");
+      }
+    } catch (error) {
+      print("Error: $error");
+    }
+  }
 
   @override
   void initState() {
@@ -102,6 +127,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     : _speechEnabled
                         ? 'Tap the microphone to start listening...'
                         : 'Speech not available',
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  sendPrompt("heya");
+                },
+                child: Text("click me"),
               ),
             ],
           ),

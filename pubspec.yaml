@@ -45,6 +45,8 @@ dependencies:
   flutter_riverpod: ^2.4.9
   js: ^0.6.7
   speech_to_text: ^6.5.1
+  http: ^1.1.0
+  dio: ^5.4.0
 
 dev_dependencies:
   flutter_test:

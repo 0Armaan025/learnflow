@@ -10,7 +10,7 @@ void main() async {
     const ProviderScope(
       child: MyApp(),
     ),
-  );
+  );  
 }
 
 class MyApp extends StatelessWidget {
