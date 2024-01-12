@@ -47,6 +47,11 @@ dependencies:
   speech_to_text: ^6.5.1
   http: ^1.1.0
   dio: ^5.4.0
+  json_serializable: ^6.7.1
+  build_runner: ^2.4.8
+  text_to_speech: ^0.2.3
+  flutter_tts: ^3.8.5
+  simplytranslate: ^1.2.4
 
 dev_dependencies:
   flutter_test:

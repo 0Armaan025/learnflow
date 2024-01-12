@@ -3,10 +3,12 @@ import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
 import 'package:lottie/lottie.dart';
+import 'package:simplytranslate/simplytranslate.dart';
 import 'package:speech_to_text/speech_recognition_error.dart';
 import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
@@ -20,37 +22,39 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final gt = SimplyTranslator(EngineType.google);
+  FlutterTts flutterTts = FlutterTts();
   SpeechToText _speechToText = SpeechToText();
   bool _speechEnabled = false;
   String _lastWords = '';
 
-  Future<void> sendPrompt(String prompt) async {
-    final dio = Dio();
+  void sendPrompt(String text) async {
+    Dio dioClient = Dio();
 
-    try {
-      final response = await dio.post(
-        'http://localhost:80/textPrompt',
-        options: Options(
-          headers: <String, String>{
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-        ),
-        data: jsonEncode(<String, String>{"prompt": prompt}),
-      );
+    const url =
+        'https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText';
 
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.data);
-        final botResponse = responseData['bot'];
+    String textResult = await gt.trSimply(text, "hi", 'en');
 
-        // Handle the response from the server (e.g., display it to the user)
-        print("Bot Response: $botResponse");
-      } else {
-        print("Request failed with status: ${response.statusCode}");
-      }
-    } catch (error) {
-      print("Error: $error");
-    }
+    final queryParameters = {'key': "<MY API KEY>"};
+    final body = {
+      'prompt': {'text': '$textResult'}
+    };
+
+    final response =
+        await dioClient.post(url, queryParameters: queryParameters, data: body);
+
+    Map<String, dynamic> responseData = response.data;
+
+    List<dynamic> candidates = responseData['candidates'];
+
+    String output = candidates[0]['output'];
+
+    textResult = await gt.trSimply(output, "en", "hi");
+
+    await flutterTts.speak(textResult.toString());
+
+    print("The output is $output");
   }
 
   @override
@@ -130,9 +134,15 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  sendPrompt("heya");
+                  sendPrompt(_lastWords);
                 },
                 child: Text("click me"),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  flutterTts.stop();
+                },
+                child: Text("stop speaking"),
               ),
             ],
           ),
