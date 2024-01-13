@@ -36,9 +36,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
     String textResult = await gt.trSimply(text, "hi", 'en');
 
-    final queryParameters = {'key': "<MY API KEY>"};
+    final queryParameters = {'key': "AIzaSyCH1Jk6k-IM7jue010oexQLSxOzaC2RpGE"};
     final body = {
-      'prompt': {'text': '$textResult'}
+      'prompt': {
+        'text':
+            '(respond like a friend, gen z, if it is a math question, do not use symbols instead say lke multipled by or depends), text is $textResult'
+      }
     };
 
     final response =
@@ -49,6 +52,10 @@ class _HomeScreenState extends State<HomeScreen> {
     List<dynamic> candidates = responseData['candidates'];
 
     String output = candidates[0]['output'];
+    output = output.replaceAll(',', '');
+
+    output = output.replaceAll('*', '');
+    output = output.replaceAll('#', '');
 
     textResult = await gt.trSimply(output, "en", "hi");
 
@@ -75,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _stopListening() async {
     await _speechToText.stop();
+
     setState(() {});
   }
 
@@ -86,6 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+
     return Scaffold(
       backgroundColor: Pallete().bgColor,
       appBar: buildAppBar(context),
@@ -104,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Stack(
                   children: [
                     Positioned(
-                      top: 260,
+                      top: 250,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 18.0),
                         child: Text(
@@ -121,29 +131,42 @@ class _HomeScreenState extends State<HomeScreen> {
                         'assets/lottie/hello_animation.json',
                       ),
                     ),
+                    Positioned(
+                      top: 280,
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 18.0),
+                        child: Center(
+                          child: Text(
+                            // If listening is active show the recognized words
+                            _speechToText.isListening
+                                ? '$_lastWords'
+                                : _speechEnabled
+                                    ? 'Tap the microphone for it to start listening...'
+                                    : 'Speech not available',
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 310,
+                      left: 18,
+                      child: Text(
+                        "Help section! :D",
+                        style: GoogleFonts.poppins(
+                            color: Colors.black, fontSize: 26),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              Text(
-                // If listening is active show the recognized words
-                _speechToText.isListening
-                    ? '$_lastWords'
-                    : _speechEnabled
-                        ? 'Tap the microphone to start listening...'
-                        : 'Speech not available',
+              Container(
+                height: size.height * 0.3,
               ),
               ElevatedButton(
-                onPressed: () {
-                  sendPrompt(_lastWords);
-                },
-                child: Text("click me"),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  flutterTts.stop();
-                },
-                child: Text("stop speaking"),
-              ),
+                  onPressed: () {
+                    sendPrompt(_lastWords);
+                  },
+                  child: Text('click me')),
             ],
           ),
         ),
