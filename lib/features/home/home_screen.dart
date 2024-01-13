@@ -27,6 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
   SpeechToText _speechToText = SpeechToText();
   bool _speechEnabled = false;
   String _lastWords = '';
+  bool _isTtsSpeaking = false;
 
   void sendPrompt(String text) async {
     Dio dioClient = Dio();
@@ -36,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     String textResult = await gt.trSimply(text, "hi", 'en');
 
-    final queryParameters = {'key': "<my api key>"};
+    final queryParameters = {'key': "<MY API KEY>"};
     final body = {
       'prompt': {
         'text':
@@ -52,14 +53,15 @@ class _HomeScreenState extends State<HomeScreen> {
     List<dynamic> candidates = responseData['candidates'];
 
     String output = candidates[0]['output'];
-    output = output.replaceAll(',', '');
+    output = output.replaceAll('`', '');
 
     output = output.replaceAll('*', '');
     output = output.replaceAll('#', '');
 
     textResult = await gt.trSimply(output, "en", "hi");
-
+    _isTtsSpeaking = true;
     await flutterTts.speak(textResult.toString());
+    _isTtsSpeaking = false;
 
     print("The output is $output");
   }
@@ -110,7 +112,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(bottom: 48.0),
+                padding: const EdgeInsets.only(bottom: 28.0),
                 child: Stack(
                   children: [
                     Positioned(
@@ -161,12 +163,116 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Container(
                 height: size.height * 0.3,
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.white54,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                alignment: Alignment.center,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              height: size.height * 0.1,
+                              width: size.width * 0.36,
+                              decoration: BoxDecoration(
+                                color: Colors.teal[300],
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Reverse\nTeaching",
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              height: size.height * 0.1,
+                              width: size.width * 0.36,
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 45, 152, 142),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Create\nFlash Cards",
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Container(
+                              height: size.height * 0.1,
+                              width: size.width * 0.36,
+                              decoration: BoxDecoration(
+                                color: const Color.fromARGB(255, 45, 152, 142),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Generate\nQuizzes                        ",
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              height: size.height * 0.1,
+                              width: size.width * 0.36,
+                              decoration: BoxDecoration(
+                                color: Colors.teal[300],
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              alignment: Alignment.center,
+                              child: Text(
+                                "Create\nNotes",
+                                style: GoogleFonts.poppins(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ]),
               ),
+              const SizedBox(height: 20),
               ElevatedButton(
                   onPressed: () {
                     sendPrompt(_lastWords);
                   },
-                  child: Text('click me')),
+                  child: Text('ASK AI.')),
+              ElevatedButton(
+                  onPressed: () {
+                    flutterTts.stop();
+                  },
+                  child: Text("Stop Listening")),
+              const SizedBox(height: 20),
             ],
           ),
         ),
