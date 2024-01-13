@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:learnflow/features/create_notes/create_notes_screen.dart';
 import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
 import 'package:lottie/lottie.dart';
@@ -37,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     String textResult = await gt.trSimply(text, "hi", 'en');
 
-    final queryParameters = {'key': "<MY API KEY>"};
+    final queryParameters = {'key': "API KEY"};
     final body = {
       'prompt': {
         'text':
@@ -230,7 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                               alignment: Alignment.center,
                               child: Text(
-                                "Generate\nQuizzes                        ",
+                                "Generate\nQuizzes",
                                 style: GoogleFonts.poppins(
                                   color: Colors.white,
                                   fontSize: 18,
@@ -240,19 +241,24 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(
                               height: 10,
                             ),
-                            Container(
-                              height: size.height * 0.1,
-                              width: size.width * 0.36,
-                              decoration: BoxDecoration(
-                                color: Colors.teal[300],
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Create\nNotes",
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 18,
+                            InkWell(
+                              onTap: () {
+                                moveScreen(context, CreateNotesScreen());
+                              },
+                              child: Container(
+                                height: size.height * 0.1,
+                                width: size.width * 0.36,
+                                decoration: BoxDecoration(
+                                  color: Colors.teal[300],
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Create\nNotes",
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
                                 ),
                               ),
                             ),
@@ -266,7 +272,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onPressed: () {
                     sendPrompt(_lastWords);
                   },
-                  child: Text('ASK AI.')),
+                  child: const Text('ASK AI')),
               ElevatedButton(
                   onPressed: () {
                     flutterTts.stop();
