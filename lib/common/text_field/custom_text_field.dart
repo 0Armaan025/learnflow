@@ -7,12 +7,16 @@ class CustomTextField extends StatefulWidget {
   final TextEditingController controller;
   final String labelText;
   final String hintText;
+  final maxLines;
+  final TextInputType keyboardType;
   final bool isObscure;
   const CustomTextField(
       {super.key,
       required this.controller,
       required this.labelText,
       this.isObscure = false,
+      this.maxLines = 1,
+      this.keyboardType = TextInputType.text,
       required this.hintText});
 
   @override
@@ -41,6 +45,8 @@ class CustomTextFieldState extends State<CustomTextField> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18.0),
             child: TextFormField(
+              keyboardType: widget.keyboardType,
+              maxLines: widget.maxLines,
               obscureText: widget.isObscure,
               controller: widget.controller,
               decoration: InputDecoration(

@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     String textResult = await gt.trSimply(text, "hi", 'en');
 
-    final queryParameters = {'key': "API KEY"};
+    final queryParameters = {'key': "AIzaSyCH1Jk6k-IM7jue010oexQLSxOzaC2RpGE"};
     final body = {
       'prompt': {
         'text':
