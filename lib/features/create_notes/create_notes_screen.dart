@@ -1,18 +1,23 @@
+import 'dart:io';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
 import 'package:learnflow/common/text_field/custom_text_field.dart';
 import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
 import 'package:camera/camera.dart';
-import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-
-import 'detector_view.dart';
-import 'text_detector_painter.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:pdf/pdf.dart' as mypdf;
+import 'package:pdf_render/pdf_render.dart';
 
 import '../../common/constants/constants.dart';
 
 class CreateNotesScreen extends StatefulWidget {
-  const CreateNotesScreen({super.key});
+  const CreateNotesScreen({Key? key}) : super(key: key);
 
   @override
   State<CreateNotesScreen> createState() => _CreateNotesScreenState();
@@ -20,83 +25,107 @@ class CreateNotesScreen extends StatefulWidget {
 
 class _CreateNotesScreenState extends State<CreateNotesScreen> {
   final _studyContentController = TextEditingController();
+  String scannedText = "";
+  String _generatedNotes = "";
+  File? imageFile;
 
-  var _script = TextRecognitionScript.latin;
-  var _textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
-  bool _canProcess = true;
-  bool _isBusy = false;
-  CustomPaint? _customPaint;
-  String? _text;
-  var _cameraLensDirection = CameraLensDirection.back;
+  void pickFile(BuildContext context) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+    );
 
-  Widget _buildDropdown() => DropdownButton<TextRecognitionScript>(
-        value: _script,
-        icon: const Icon(Icons.arrow_downward),
-        elevation: 16,
-        style: const TextStyle(color: Colors.blue),
-        underline: Container(
-          height: 2,
-          color: Colors.blue,
-        ),
-        onChanged: (TextRecognitionScript? script) {
-          if (script != null) {
-            setState(() {
-              _script = script;
-              _textRecognizer.close();
-              _textRecognizer = TextRecognizer(script: _script);
-            });
-          }
-        },
-        items: TextRecognitionScript.values
-            .map<DropdownMenuItem<TextRecognitionScript>>((script) {
-          return DropdownMenuItem<TextRecognitionScript>(
-            value: script,
-            child: Text(script.name),
-          );
-        }).toList(),
-      );
-
-  Future<void> _processImage(InputImage inputImage) async {
-    if (!_canProcess) return;
-    if (_isBusy) return;
-    _isBusy = true;
-    setState(() {
-      _text = '';
-    });
-    final recognizedText = await _textRecognizer.processImage(inputImage);
-    if (inputImage.metadata?.size != null &&
-        inputImage.metadata?.rotation != null) {
-      final painter = TextRecognizerPainter(
-        recognizedText,
-        inputImage.metadata!.size,
-        inputImage.metadata!.rotation,
-        _cameraLensDirection,
-      );
-      _customPaint = CustomPaint(painter: painter);
-    } else {
-      _text = 'Recognized text:\n\n${recognizedText.text}';
-      // TODO: set _customPaint to draw boundingRect on top of image
-      _customPaint = null;
-    }
-    _isBusy = false;
-    if (mounted) {
+    if (result != null && result.files.isNotEmpty) {
+      File file = File(result.files.first.path!);
+      await renderPdf(file);
       setState(() {});
     }
   }
 
+  Future<void> renderPdf(File pdfFile) async {
+    final document = await PdfDocument.openFile(pdfFile.path);
+    final page = await document.getPage(1);
+
+    final pageImage = await page.render(
+      width: int.parse(page.width as String),
+      height: int.parse(page.height as String),
+    );
+
+    final tempDir = Directory.systemTemp;
+    final tempPdf = File('${tempDir.path}/temp_pdf.jpeg');
+    await tempPdf.writeAsBytes(pageImage as List<int>);
+
+    imageFile = tempPdf;
+  }
+
+  void generateNotes() async {
+    Dio dioClient = Dio();
+
+    const url =
+        'https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText';
+
+    final queryParameters = {'key': "AIzaSyCH1Jk6k-IM7jue010oexQLSxOzaC2RpGE"};
+    final body = {
+      'prompt': {
+        'text':
+            '(makes notes like a mindmap graph, genz friend), make notes for the text $scannedText',
+      },
+    };
+
+    final response =
+        await dioClient.post(url, queryParameters: queryParameters, data: body);
+
+    Map<String, dynamic> responseData = response.data;
+
+    List<dynamic> candidates = responseData['candidates'];
+
+    String output = candidates[0]['output'];
+    output = output.replaceAll('`', '');
+
+    output = output.replaceAll('*', '');
+    output = output.replaceAll('#', '');
+
+    _generatedNotes = output;
+    setState(() {});
+  }
+
+  void getRecognizedText() async {
+    final inputImage = InputImage.fromFilePath(imageFile!.path);
+    final textDetector = GoogleMlKit.vision.textRecognizer();
+    RecognizedText recognizedText = await textDetector.processImage(inputImage);
+    await textDetector.close();
+    scannedText = "";
+
+    for (TextBlock block in recognizedText.blocks) {
+      for (TextLine line in block.lines) {
+        scannedText = scannedText + line.text + "\n";
+      }
+      setState(() {});
+    }
+
+    generateNotes();
+  }
+
   @override
   void dispose() {
-    _canProcess = false;
-    _textRecognizer.close();
     super.dispose();
     _studyContentController.dispose();
   }
 
   void makeNotes(BuildContext context) {
     if (_studyContentController.text.isEmpty && imageFile == null) {
-      showSnackBar(
-          context, "Please input your study content or upload an image.");
-    } else {}
+      showSnackBar(context,
+          "Please input your study content or upload an image or PDF.");
+    } else {
+      if (imageFile == null && _studyContentController.text.isNotEmpty) {
+        // Make notes from text content
+        scannedText = _studyContentController.text;
+        generateNotes();
+      } else if (imageFile != null) {
+        // Make notes from image content
+        getRecognizedText();
+      }
+    }
   }
 
   @override
@@ -122,17 +151,6 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Stack(children: [
-                DetectorView(
-                  title: 'Text Detector',
-                  customPaint: _customPaint,
-                  text: _text,
-                  onImage: _processImage,
-                  initialCameraLensDirection: _cameraLensDirection,
-                  onCameraLensDirectionChanged: (value) =>
-                      _cameraLensDirection = value,
-                ),
-              ]),
               Center(
                 child: Container(
                   height: size.height * 0.2,
@@ -147,9 +165,15 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
                       ? IconButton(
                           icon: Icon(Icons.add_a_photo,
                               color: Colors.white, size: 40),
-                          onPressed: () {
-                            pickImage(context);
-                            setState(() {});
+                          onPressed: () async {
+                            final pickedFile = await ImagePicker().pickImage(
+                              source: ImageSource.gallery,
+                            );
+
+                            if (pickedFile != null) {
+                              imageFile = File(pickedFile.path);
+                              setState(() {});
+                            }
                           },
                         )
                       : Container(
@@ -168,9 +192,15 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
                 alignment: Alignment.centerRight,
                 margin: const EdgeInsets.only(right: 30),
                 child: IconButton(
-                  onPressed: () {
-                    pickImage(context);
-                    setState(() {});
+                  onPressed: () async {
+                    final pickedFile = await ImagePicker().pickImage(
+                      source: ImageSource.gallery,
+                    );
+
+                    if (pickedFile != null) {
+                      imageFile = File(pickedFile.path);
+                      setState(() {});
+                    }
                   },
                   icon: const Icon(Icons.edit),
                 ),
@@ -178,6 +208,19 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
               const SizedBox(
                 height: 5,
               ),
+              Container(
+                width: double.infinity,
+                alignment: Alignment.centerRight,
+                margin: const EdgeInsets.only(right: 30),
+                child: IconButton(
+                  onPressed: () {
+                    pickFile(context); // Open file picker for PDF
+                    setState(() {});
+                  },
+                  icon: const Icon(Icons.insert_drive_file),
+                ),
+              ),
+              const SizedBox(height: 5),
               Center(
                 child: Text(
                   "Or, you can input\nyour study material\nhere manually.",
@@ -200,21 +243,62 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
               const SizedBox(
                 height: 10,
               ),
-              Container(
-                height: size.height * 0.08,
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Pallete().buttonColor,
-                ),
-                child: Text(
-                  "Make notes!",
-                  style: GoogleFonts.archivoNarrow(
-                      color: Pallete().buttonTextColor, fontSize: 26),
+              InkWell(
+                onTap: () {
+                  makeNotes(context);
+                },
+                child: Container(
+                  height: size.height * 0.08,
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 30),
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: Pallete().buttonColor,
+                  ),
+                  child: Text(
+                    "Make notes!",
+                    style: GoogleFonts.archivoNarrow(
+                        color: Pallete().buttonTextColor, fontSize: 26),
+                  ),
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                width: double.infinity,
+                height: 1,
+                color: Colors.grey,
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Text(
+                "Your generated notes:",
+                style: GoogleFonts.poppins(
+                  color: Colors.black,
+                  fontSize: 22,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.symmetric(horizontal: 30),
+                alignment: Alignment.centerLeft,
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(8),
+                  color: Colors.grey[300],
+                ),
+                child: Column(
+                  children: [
+                    Text(_generatedNotes),
+                    Container(),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
             ],
           ),
         ),
