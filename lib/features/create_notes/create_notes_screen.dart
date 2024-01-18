@@ -1,19 +1,20 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:google_ml_kit/google_ml_kit.dart';
+import 'package:google_ml_kit/google_ml_kit.dart' as gKit;
 import 'package:learnflow/common/text_field/custom_text_field.dart';
 import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
 import 'package:camera/camera.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:pdf/pdf.dart' as mypdf;
-import 'package:pdf_render/pdf_render.dart';
-
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 import '../../common/constants/constants.dart';
 
 class CreateNotesScreen extends StatefulWidget {
@@ -28,6 +29,7 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
   String scannedText = "";
   String _generatedNotes = "";
   File? imageFile;
+  File? pdfFile;
 
   void pickFile(BuildContext context) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -37,28 +39,26 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
 
     if (result != null && result.files.isNotEmpty) {
       File file = File(result.files.first.path!);
-      await renderPdf(file);
-      setState(() {});
+
+      setState(() {
+        pdfFile = file;
+      });
+      extractText();
     }
   }
 
-  Future<void> renderPdf(File pdfFile) async {
-    final document = await PdfDocument.openFile(pdfFile.path);
-    final page = await document.getPage(1);
+  void extractText() async {
+    final PdfDocument document =
+        PdfDocument(inputBytes: File(pdfFile!.path).readAsBytesSync());
+    PdfTextExtractor extractor = PdfTextExtractor(document);
 
-    final pageImage = await page.render(
-      width: int.parse(page.width as String),
-      height: int.parse(page.height as String),
-    );
-
-    final tempDir = Directory.systemTemp;
-    final tempPdf = File('${tempDir.path}/temp_pdf.jpeg');
-    await tempPdf.writeAsBytes(pageImage as List<int>);
-
-    imageFile = tempPdf;
+    String text = extractor.extractText();
+    _generatedNotes = text;
+    setState(() {});
+    generateNotes(_generatedNotes);
   }
 
-  void generateNotes() async {
+  void generateNotes(String scannedText) async {
     Dio dioClient = Dio();
 
     const url =
@@ -89,21 +89,22 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
     setState(() {});
   }
 
-  void getRecognizedText() async {
-    final inputImage = InputImage.fromFilePath(imageFile!.path);
-    final textDetector = GoogleMlKit.vision.textRecognizer();
-    RecognizedText recognizedText = await textDetector.processImage(inputImage);
+  void getRecognizedText(File imageFile) async {
+    final inputImage = gKit.InputImage.fromFilePath(imageFile.path);
+    final textDetector = gKit.GoogleMlKit.vision.textRecognizer();
+    gKit.RecognizedText recognizedText =
+        await textDetector.processImage(inputImage);
     await textDetector.close();
     scannedText = "";
 
-    for (TextBlock block in recognizedText.blocks) {
-      for (TextLine line in block.lines) {
+    for (gKit.TextBlock block in recognizedText.blocks) {
+      for (gKit.TextLine line in block.lines) {
         scannedText = scannedText + line.text + "\n";
       }
       setState(() {});
     }
 
-    generateNotes();
+    generateNotes(scannedText);
   }
 
   @override
@@ -113,18 +114,16 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
   }
 
   void makeNotes(BuildContext context) {
-    if (_studyContentController.text.isEmpty && imageFile == null) {
-      showSnackBar(context,
-          "Please input your study content or upload an image or PDF.");
+    if (imageFile == null && _studyContentController.text.isNotEmpty) {
+      // Make notes from text content
+      scannedText = _studyContentController.text;
+      generateNotes(scannedText);
+    } else if (imageFile != null) {
+      // Make notes from image content
+      getRecognizedText(imageFile!);
     } else {
-      if (imageFile == null && _studyContentController.text.isNotEmpty) {
-        // Make notes from text content
-        scannedText = _studyContentController.text;
-        generateNotes();
-      } else if (imageFile != null) {
-        // Make notes from image content
-        getRecognizedText();
-      }
+      scannedText = _studyContentController.text;
+      generateNotes(scannedText);
     }
   }
 
@@ -215,6 +214,7 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
                 child: IconButton(
                   onPressed: () {
                     pickFile(context); // Open file picker for PDF
+
                     setState(() {});
                   },
                   icon: const Icon(Icons.insert_drive_file),
