@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:learnflow/features/create_flash_cards/create_flash_cards.dart';
 import 'package:learnflow/features/create_notes/create_notes_screen.dart';
 import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
@@ -198,19 +199,26 @@ class _HomeScreenState extends State<HomeScreen> {
                             const SizedBox(
                               height: 10,
                             ),
-                            Container(
-                              height: size.height * 0.1,
-                              width: size.width * 0.36,
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 45, 152, 142),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Create\nFlash Cards",
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 18,
+                            InkWell(
+                              onTap: () {
+                                moveScreen(context, CreateFlashCardsScreen(),
+                                    isPushReplacement: true);
+                              },
+                              child: Container(
+                                height: size.height * 0.1,
+                                width: size.width * 0.36,
+                                decoration: BoxDecoration(
+                                  color:
+                                      const Color.fromARGB(255, 45, 152, 142),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Create\nFlash Cards",
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
                                 ),
                               ),
                             ),
@@ -243,7 +251,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                             InkWell(
                               onTap: () {
-                                moveScreen(context, CreateNotesScreen());
+                                moveScreen(context, CreateNotesScreen(),
+                                    isPushReplacement: true);
                               },
                               child: Container(
                                 height: size.height * 0.1,

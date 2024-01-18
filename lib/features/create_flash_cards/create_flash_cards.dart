@@ -6,6 +6,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:learnflow/common/flash_card_widget/flash_card_widget.dart';
+import 'package:learnflow/features/create_flash_cards/flash_card_template.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:google_ml_kit/google_ml_kit.dart' as gKit;
 import 'package:learnflow/common/text_field/custom_text_field.dart';
@@ -17,14 +19,14 @@ import 'package:image_picker/image_picker.dart';
 import 'package:syncfusion_flutter_pdf/pdf.dart';
 import '../../common/constants/constants.dart';
 
-class CreateNotesScreen extends StatefulWidget {
-  const CreateNotesScreen({Key? key}) : super(key: key);
+class CreateFlashCardsScreen extends StatefulWidget {
+  const CreateFlashCardsScreen({Key? key}) : super(key: key);
 
   @override
-  State<CreateNotesScreen> createState() => _CreateNotesScreenState();
+  State<CreateFlashCardsScreen> createState() => _CreateFlashCardsScreenState();
 }
 
-class _CreateNotesScreenState extends State<CreateNotesScreen> {
+class _CreateFlashCardsScreenState extends State<CreateFlashCardsScreen> {
   final _studyContentController = TextEditingController();
   String scannedText = "";
   String _generatedNotes = "";
@@ -68,7 +70,7 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
     final body = {
       'prompt': {
         'text':
-            '(makes notes like a mindmap graph, genz friend), make notes for the text $scannedText',
+            'can you please write the keypoints of this topic (in sentences) all separated by ",", text is $scannedText',
       },
     };
 
@@ -81,9 +83,7 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
 
     String output = candidates[0]['output'];
     output = output.replaceAll('`', '');
-
-    output = output.replaceAll('*', '');
-    output = output.replaceAll('#', '');
+    output = output.replaceAll('*', '->');
 
     _generatedNotes = output;
     setState(() {});
@@ -140,7 +140,7 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
               const SizedBox(height: 20),
               Center(
                 child: Text(
-                  "Let's create study notes.",
+                  "Let's create flash cards.",
                   style: GoogleFonts.poppins(
                     color: Pallete().headlineTextColor,
                     fontSize: 18,
@@ -245,7 +245,8 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
               ),
               InkWell(
                 onTap: () {
-                  makeNotes(context);
+                  moveScreen(
+                      context, FlashCardTemplate(fullText: _generatedNotes),isPushReplacement: true);
                 },
                 child: Container(
                   height: size.height * 0.08,
@@ -257,7 +258,7 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
                     color: Pallete().buttonColor,
                   ),
                   child: Text(
-                    "Make notes!",
+                    "Make flash cards!",
                     style: GoogleFonts.archivoNarrow(
                         color: Pallete().buttonTextColor, fontSize: 26),
                   ),
@@ -266,49 +267,6 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
               const SizedBox(
                 height: 20,
               ),
-              Container(
-                width: double.infinity,
-                height: 1,
-                color: Colors.grey,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              Text(
-                "Your generated notes:",
-                style: GoogleFonts.poppins(
-                  color: Colors.black,
-                  fontSize: 22,
-                ),
-              ),
-              const SizedBox(height: 10),
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 30),
-                alignment: Alignment.centerLeft,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Colors.grey[300],
-                ),
-                child: Column(
-                  children: [
-                    Text(_generatedNotes),
-                    Container(
-                      width: double.infinity,
-                      alignment: Alignment.centerRight,
-                      child: IconButton(
-                        onPressed: () {
-                          Clipboard.setData(
-                              ClipboardData(text: _generatedNotes));
-                        },
-                        icon: const Icon(Icons.copy),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 20),
             ],
           ),
         ),
