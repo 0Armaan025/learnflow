@@ -28,6 +28,8 @@ class _FlashCardTemplateState extends State<FlashCardTemplate> {
   void createFlashCardQuotes() async {
     Dio dioClient = Dio();
 
+    print('inside text is ${widget.fullText}');
+
     const url =
         'https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText';
 
@@ -35,7 +37,7 @@ class _FlashCardTemplateState extends State<FlashCardTemplate> {
     final body = {
       'prompt': {
         'text':
-            'convert this full paragraph into small sentences, divide them using comma, the text is ${widget.fullText}',
+            ' ${widget.fullText} get keypoints, convert them into sentences (10 sentences) all divided by a comma',
       },
     };
 
@@ -50,7 +52,8 @@ class _FlashCardTemplateState extends State<FlashCardTemplate> {
     print('the output is $output');
 
     _generatedNotes = output;
-    quotes = _generatedNotes.split(', ');
+    print('the inner text is ${_generatedNotes}');
+    quotes = _generatedNotes.split(',');
 
     setState(() {
       print(quotes);

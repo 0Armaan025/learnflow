@@ -44,6 +44,7 @@ class _CreateFlashCardsScreenState extends State<CreateFlashCardsScreen> {
 
       setState(() {
         pdfFile = file;
+        showSnackBar(context, "Pdf file picked!");
       });
       extractText();
     }
@@ -70,7 +71,7 @@ class _CreateFlashCardsScreenState extends State<CreateFlashCardsScreen> {
     final body = {
       'prompt': {
         'text':
-            'can you please write the keypoints of this topic (in sentences) all separated by ",", text is $scannedText',
+            '$scannedText get keypoints, convert them into sentences (10 sentences) all divided by a comma',
       },
     };
 
@@ -83,7 +84,6 @@ class _CreateFlashCardsScreenState extends State<CreateFlashCardsScreen> {
 
     String output = candidates[0]['output'];
     output = output.replaceAll('`', '');
-    output = output.replaceAll('*', '->');
 
     _generatedNotes = output;
     setState(() {});
@@ -101,9 +101,10 @@ class _CreateFlashCardsScreenState extends State<CreateFlashCardsScreen> {
       for (gKit.TextLine line in block.lines) {
         scannedText = scannedText + line.text + "\n";
       }
-      setState(() {});
+      setState(() {
+        print('the text in the image is $scannedText');
+      });
     }
-
     generateNotes(scannedText);
   }
 
@@ -114,6 +115,10 @@ class _CreateFlashCardsScreenState extends State<CreateFlashCardsScreen> {
   }
 
   void makeNotes(BuildContext context) {
+    imageFile = null;
+    setState(() {
+      scannedText = "";
+    });
     if (imageFile == null && _studyContentController.text.isNotEmpty) {
       // Make notes from text content
       scannedText = _studyContentController.text;
@@ -245,8 +250,9 @@ class _CreateFlashCardsScreenState extends State<CreateFlashCardsScreen> {
               ),
               InkWell(
                 onTap: () {
-                  moveScreen(
-                      context, FlashCardTemplate(fullText: _generatedNotes),isPushReplacement: true);
+                  makeNotes(context);
+                  moveScreen(context, FlashCardTemplate(fullText: scannedText),
+                      isPushReplacement: true);
                 },
                 child: Container(
                   height: size.height * 0.08,

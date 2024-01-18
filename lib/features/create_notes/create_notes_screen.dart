@@ -42,6 +42,7 @@ class _CreateNotesScreenState extends State<CreateNotesScreen> {
 
       setState(() {
         pdfFile = file;
+        showSnackBar(context, "Pdf file picked!");
       });
       extractText();
     }
