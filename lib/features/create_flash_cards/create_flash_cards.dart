@@ -31,6 +31,8 @@ class _CreateFlashCardsScreenState extends State<CreateFlashCardsScreen> {
   String scannedText = "";
   String _generatedNotes = "";
   File? imageFile;
+  List<String> quotes = [];
+
   File? pdfFile;
 
   void pickFile(BuildContext context) async {
@@ -84,12 +86,22 @@ class _CreateFlashCardsScreenState extends State<CreateFlashCardsScreen> {
 
     String output = candidates[0]['output'];
     output = output.replaceAll('`', '');
-
+    output = output.replaceAll(',', '\n');
+    quotes = output.split('\n');
     _generatedNotes = output;
     setState(() {});
+    moveScreen(
+        context,
+        FlashCardTemplate(
+          fullText: scannedText,
+          quotes: quotes,
+        ),
+        isPushReplacement: true);
   }
 
   void getRecognizedText(File imageFile) async {
+    if (!mounted) return; // Check if the widget is still in the tree
+
     final inputImage = gKit.InputImage.fromFilePath(imageFile.path);
     final textDetector = gKit.GoogleMlKit.vision.textRecognizer();
     gKit.RecognizedText recognizedText =
@@ -97,15 +109,18 @@ class _CreateFlashCardsScreenState extends State<CreateFlashCardsScreen> {
     await textDetector.close();
     scannedText = "";
 
+    if (!mounted) return; // Check again after the asynchronous operation
+
     for (gKit.TextBlock block in recognizedText.blocks) {
       for (gKit.TextLine line in block.lines) {
         scannedText = scannedText + line.text + "\n";
       }
-      setState(() {
-        print('the text in the image is $scannedText');
-      });
+      setState(() {});
     }
-    generateNotes(scannedText);
+
+    if (mounted) {
+      generateNotes(scannedText);
+    }
   }
 
   @override
@@ -115,10 +130,6 @@ class _CreateFlashCardsScreenState extends State<CreateFlashCardsScreen> {
   }
 
   void makeNotes(BuildContext context) {
-    imageFile = null;
-    setState(() {
-      scannedText = "";
-    });
     if (imageFile == null && _studyContentController.text.isNotEmpty) {
       // Make notes from text content
       scannedText = _studyContentController.text;
@@ -251,8 +262,6 @@ class _CreateFlashCardsScreenState extends State<CreateFlashCardsScreen> {
               InkWell(
                 onTap: () {
                   makeNotes(context);
-                  moveScreen(context, FlashCardTemplate(fullText: scannedText),
-                      isPushReplacement: true);
                 },
                 child: Container(
                   height: size.height * 0.08,
