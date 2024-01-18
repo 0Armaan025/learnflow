@@ -5,7 +5,8 @@ import 'package:learnflow/utils/pallete.dart';
 class CustomSignUpButton extends StatefulWidget {
   final VoidCallback onPressed;
   final String text;
-  const CustomSignUpButton({super.key, required this.onPressed, required this.text});
+  const CustomSignUpButton(
+      {super.key, required this.onPressed, required this.text});
 
   @override
   State<CustomSignUpButton> createState() => _CustomSignUpButtonState();
