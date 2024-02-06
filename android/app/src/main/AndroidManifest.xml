@@ -8,7 +8,7 @@
     </queries>
 
     <application
-        android:label="learnflow"
+        android:label="DARE"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

@@ -42,7 +42,7 @@ void pickImage(BuildContext context) async {
   }
 }
 
-AppBar buildAppBar(BuildContext context, {String title = "LearnFlow"}) {
+AppBar buildAppBar(BuildContext context, {String title = "DARE"}) {
   return AppBar(
     title: Text(
       title,

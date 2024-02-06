@@ -6,8 +6,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 File? imageFile;
 
-String appName = "LearnFlow";
-String appTagLine = "Let the learning flow begin!";
+String appName = "DARE";
+String appTagLine = "DYNAMIC ADAPTIVE REVOLUTION IN EDUCATION!";
 
 // firebase constants
 

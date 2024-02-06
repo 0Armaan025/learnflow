@@ -7,6 +7,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:learnflow/features/create_flash_cards/create_flash_cards.dart';
 import 'package:learnflow/features/create_notes/create_notes_screen.dart';
+import 'package:learnflow/features/dare_features/dare_features_screen.dart';
 import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
 import 'package:lottie/lottie.dart';
@@ -276,6 +277,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ]),
               ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                  onPressed: () {
+                    moveScreen(context, DareFeaturesScreen());
+                  },
+                  child: Text(
+                    'Explore other awesome features of DARE ',
+                    style: GoogleFonts.poppins(),
+                  )),
               const SizedBox(height: 20),
               ElevatedButton(
                   onPressed: () {
