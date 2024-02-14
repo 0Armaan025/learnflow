@@ -17,6 +17,8 @@ import 'package:speech_to_text/speech_recognition_result.dart';
 import 'package:speech_to_text/speech_to_text.dart';
 import 'package:http/http.dart' as http;
 
+import '../generate_quizzes/generate_quizzes_screen.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -231,19 +233,25 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Container(
-                              height: size.height * 0.1,
-                              width: size.width * 0.36,
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 45, 152, 142),
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                "Generate\nQuizzes",
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 18,
+                            InkWell(
+                              onTap: () {
+                                moveScreen(context, GenerateQuizzesScreen());
+                              },
+                              child: Container(
+                                height: size.height * 0.1,
+                                width: size.width * 0.36,
+                                decoration: BoxDecoration(
+                                  color:
+                                      const Color.fromARGB(255, 45, 152, 142),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "Generate\nQuizzes",
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                  ),
                                 ),
                               ),
                             ),
