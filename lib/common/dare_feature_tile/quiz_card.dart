@@ -103,6 +103,8 @@ class _QuizCardState extends State<QuizCard> {
     option2 = await getOption(
             'Just answer in one word, give options for this question (2nd option), $questionTitle. Avoid repeating the previous options: ${option1 ?? ""}') ??
         "";
+
+    
     option3 = await getOption(
             'Just answer in one word, give options for this question (3rd and correct option), $questionTitle. Avoid repeating the previous options: ${option1 ?? ""}, ${option2 ?? ""}') ??
         "";
@@ -110,6 +112,17 @@ class _QuizCardState extends State<QuizCard> {
             'Just answer in one word, give options for this question (4th option), $questionTitle. Avoid repeating the previous options: ${option1 ?? ""}, ${option2 ?? ""}, ${option3 ?? ""}') ??
         "";
 
+
+    if (option2 == "" || option2 == null) {
+       option2 = await getOption(
+            'Just answer in one word, give options for this question (2nd option), $questionTitle. Avoid repeating the previous options: ${option1 ?? ""}') ??
+        "";
+    }
+    else if (option3 == "" || option3 == null){
+  option3 = await getOption(
+            'Just answer in one word, give options for this question (3rd and correct option), $questionTitle. Avoid repeating the previous options: ${option1 ?? ""}, ${option2 ?? ""}') ??
+        "";
+    }
     // Set correct answer
     answer = option3;
 
@@ -192,7 +205,7 @@ Widget build(BuildContext context) {
                   child: Text(
                     "${option1}",
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 14,
                       color: Pallete().buttonTextColor,
                     ),
                   ),
@@ -218,7 +231,7 @@ Widget build(BuildContext context) {
                   child: Text(
                     "${option2}",
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 14,
                       color: Pallete().buttonTextColor,
                     ),
                   ),
@@ -244,7 +257,7 @@ Widget build(BuildContext context) {
                   child: Text(
                     "${option3}",
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 14,
                       color: Pallete().buttonTextColor,
                     ),
                   ),
@@ -270,7 +283,7 @@ Widget build(BuildContext context) {
                   child: Text(
                     "${option4}",
                     style: GoogleFonts.poppins(
-                      fontSize: 18,
+                      fontSize: 14,
                       color: Pallete().buttonTextColor,
                     ),
                   ),
