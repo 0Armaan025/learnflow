@@ -32,65 +32,103 @@ void showSnackBar(BuildContext context, String message) {
 }
 
 
-
+  String questionTitle = "";
   String statusText = "";
 
-  String questionTitle = "";
-  String option1 = "";
-  String option2 = "";
-  String option3 = "";
-  String option4 = "";
-  String answer = "";
+//   Future<String?> getQuestionTitle(String scannedText) async {
+//   Dio dioClient = Dio();
+//   const url = 'https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText';
+//   final queryParameters = {'key': "AIzaSyCH1Jk6k-IM7jue010oexQLSxOzaC2RpGE"};
 
-void getQuestionAndAnswer(String scannedText) async {
-  Dio dioClient = Dio();
-  const url = 'https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText';
-  final queryParameters = {'key': "AIzaSyCH1Jk6k-IM7jue010oexQLSxOzaC2RpGE"};
+//   try {
+//     // Generate question
+//     final questionBody = {
+//       'prompt': {'text': 'What are the questions that can be made on the basis of (just say one question): $scannedText'},
+//     };
+//     final questionResponse = await dioClient.post(url, queryParameters: queryParameters, data: questionBody);
 
-  try {
-    // Generate question
-    final questionBody = {
-      'prompt': {'text': 'What are the questions that can be made on the basis of (just say one question): $scannedText'},
-    };
-    final questionResponse = await dioClient.post(url, queryParameters: queryParameters, data: questionBody);
-    final Map<String, dynamic> questionData = questionResponse.data;
-    final List<dynamic> questionCandidates = questionData['candidates'];
-    questionTitle = questionCandidates[0]['output'];
+//     final Map<String, dynamic>? questionData = questionResponse.data;
+//     final List<dynamic>? questionCandidates = questionData?['candidates'];
 
-    // Generate options
-  for (int i = 1; i <= 4; i++) {
-  final optionBody = {
-    'prompt': {'text': 'Just answer in one word, give options for this question ($i option), $questionTitle'},
-  };
-  final optionResponse = await dioClient.post(url, queryParameters: queryParameters, data: optionBody);
-  final Map<String, dynamic> optionData = optionResponse.data;
-  final List<dynamic> optionCandidates = optionData['candidates'];
+//     if (questionCandidates != null && questionCandidates.isNotEmpty) {
+//       questionTitle = questionCandidates[0]['output'];
+//       return questionCandidates[0]['output'];
+//     } else {
+//       print('Error: No candidates found in the question response.');
+//       return null;
+//     }
+//   } catch (e) {
+//     print('Error: $e');
+//     // Handle error accordingly
+//     return null;
+//   }
+// }
 
-  // Ensure we have at least i options
-  if (optionCandidates.length >= i) {
-    switch (i) {
-      case 1:
-        option1 = optionCandidates[0]['output'];
-        break;
-      case 2:
-        option2 = optionCandidates[1]['output'];
-        break;
-      case 3:
-        option3 = optionCandidates[2]['output'];
-        break;
-      case 4:
-        option4 = optionCandidates[3]['output'];
-        break;
-    }
-  }
-}
-    // Set correct answer
-    answer = option3;
-  } catch (e) {
-    print('Error: $e');
-    // Handle error accordingly
-  }
-}
+ String? option1;
+ String? option2;
+ String? option3;
+ String? option4;
+
+ String? answer;
+
+// Future<void> getOptions(String questionTitle) async {
+//   Dio dioClient = Dio();
+//   const url = 'https://generativelanguage.googleapis.com/v1beta2/models/text-bison-001:generateText';
+//   final queryParameters = {'key': "AIzaSyCH1Jk6k-IM7jue010oexQLSxOzaC2RpGE"};
+
+//   // Helper function to get option
+//   Future<String?> getOption(String prompt) async {
+//     try {
+//       final optionBody = {'prompt': {'text': prompt}};
+//       final optionResponse = await dioClient.post(url, queryParameters: queryParameters, data: optionBody);
+//       print('Option Response: $optionResponse'); // Add this line for debugging
+//       final Map<String, dynamic>? optionData = optionResponse.data;
+      
+//       if (optionData != null) {
+//         final List<dynamic>? optionCandidates = optionData['candidates'];
+
+//         if (optionCandidates != null && optionCandidates.isNotEmpty) {
+//           return optionCandidates[0]['output'];
+//         } else {
+//           print('Error: No candidates found in the response for prompt: $prompt');
+//         }
+//       } else {
+//         print('Error: Unexpected response structure for prompt: $prompt');
+//       }
+
+//       return null;
+//     } catch (e) {
+//       print('Error fetching option: $e');
+//       return null;
+//     }
+//   }
+
+//   // Generate options
+//   option1 = await getOption('Just answer in one word, give options for this question (1st option), $questionTitle') ?? "";
+//   option2 = await getOption('Just answer in one word, give options for this question (2nd option), $questionTitle. Avoid repeating the previous options: ${option1 ?? ""}') ?? "";
+//   option3 = await getOption('Just answer in one word, give options for this question (3rd and correct option), $questionTitle. Avoid repeating the previous options: ${option1 ?? ""}, ${option2 ?? ""}') ?? "";
+//   option4 = await getOption('Just answer in one word, give options for this question (4th option), $questionTitle. Avoid repeating the previous options: ${option1 ?? ""}, ${option2 ?? ""}, ${option3 ?? ""}') ?? "";
+
+//   // Set correct answer
+//   answer = option3;
+
+//   print('Option 1: $option1');
+//   print('Option 2: $option2');
+//   print('Option 3: $option3');
+//   print('Option 4: $option4');
+//   print('Correct Answer: $answer');
+// }
+
+
+
+// Future<void> getQuestionAndAnswer(String scannedText) async {
+//   String? questionTitle = await getQuestionTitle(scannedText);
+//   if (questionTitle != null) {
+//     await getOptions(questionTitle);
+//   }
+// }
+
+
 
 
 void pickImage(BuildContext context) async {
