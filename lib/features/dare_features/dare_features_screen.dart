@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:learnflow/common/dare_feature_tile/dare_feature_tile.dart';
+import 'package:learnflow/features/dare_features/progress_creator/progress_creator_screen.dart';
 import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
 
@@ -53,6 +54,21 @@ class _DareFeaturesScreenState extends State<DareFeaturesScreen> {
                     'https://media.istockphoto.com/id/1460007178/photo/library-books-on-table-and-background-for-studying-learning-and-research-in-education-school.jpg?s=1024x1024&w=is&k=20&c=cuzIXmvKHLpoGxGIft9zCiTw-jeL0Gjp7UNZau0MNkk=',
                 descriptionText:
                     "Have practical super edutracks to get practical knowledge!",
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              InkWell(
+                onTap: () {
+                  moveScreen(context, ProgressCreatorScreen());
+                },
+                child: DareFeatureTile(
+                  titleText: "AI-Generated\nTracks",
+                  bannerImage:
+                      'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8YWklMjBzdHVkeXxlbnwwfHwwfHx8MA%3D%3D',
+                  descriptionText:
+                      "Let's help you set up a track using AI! 🔥",
+                ),
               ),
             ],
           ),
