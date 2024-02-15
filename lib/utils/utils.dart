@@ -64,6 +64,8 @@ void showSnackBar(BuildContext context, String message) {
 //   }
 // }
 
+int score = 0;
+
  String? option1;
  String? option2;
  String? option3;
