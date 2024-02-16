@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:learnflow/features/dare_features/unqiue_institution_management/announcements/announcements_screen.dart';
+import 'package:learnflow/features/dare_features/unqiue_institution_management/home_work/home_work_screen.dart';
 import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
 
@@ -84,29 +85,34 @@ class _InstitutionDashboardScreenState extends State<InstitutionDashboardScreen>
                   ),
                 ),
                 const SizedBox(width: 10),
-                 Container(
-                  height: 180,
-                  width: 130,
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 65, 106, 172),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  alignment: Alignment.center,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 30,),
-                      Icon(
-                        Icons.home_work,
-                        size: 60,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(height:30,),
-                      Center(
-                        child: Text("Home Work!",style: GoogleFonts.poppins(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 12,),),
-                      ),
-                    ],
-                  ),
-                ),
+                 InkWell(
+                  onTap: () {
+                    moveScreen(context, HomeworkScreen());
+                  },
+                   child: Container(
+                    height: 180,
+                    width: 130,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 65, 106, 172),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 30,),
+                        Icon(
+                          Icons.home_work,
+                          size: 60,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height:30,),
+                        Center(
+                          child: Text("Home Work!",style: GoogleFonts.poppins(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 12,),),
+                        ),
+                      ],
+                    ),
+                                 ),
+                 ),
                 const SizedBox(height: 20,),
                 
               ],
@@ -114,7 +120,7 @@ class _InstitutionDashboardScreenState extends State<InstitutionDashboardScreen>
             
             const SizedBox(height: 20,),
             Center(
-                  child: Text("More features coming soon!\nWith V: 2.0 Students, faculty management\n, school details management, fees system\n, and sleep monitoring will be added too!",style: GoogleFonts.poppins(color: Colors.black, fontSize: 15,),),
+                  child: Text("More features coming soon!\nWith V: 2.0 Students, faculty management\n, school details management, fees system\n, students P.O.V, and sleep monitoring will be added too!",style: GoogleFonts.poppins(color: Colors.black, fontSize: 15,),),
                 ),
 
                 const SizedBox(height: 20,),

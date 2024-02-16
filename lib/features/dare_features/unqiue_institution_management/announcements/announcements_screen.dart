@@ -10,9 +10,9 @@ class AnnouncementsScreen extends StatefulWidget {
 class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
   // Dummy data for announcements
   final List<Map<String, String>> announcements = [
-    {'school': 'Sacred Heart Convent School', 'announcement': 'Important notice for upcoming event.'},
-    {'school': 'Sacred Heart Convent School', 'announcement': 'School will be closed on Monday.'},
-    {'school': 'Sacred Heart Convent School', 'announcement': 'Parent-Teacher meeting scheduled for next week.'},
+    {'school': 'Sacred Heart Convent School', 'announcement': 'Important notice for upcoming event.', 'timestamp': '5'},
+    {'school': 'Sacred Heart Convent School', 'announcement': 'School will be closed on Monday.', 'timestamp': '15'},
+    {'school': 'Sacred Heart Convent School', 'announcement': 'Parent-Teacher meeting scheduled for next week.', 'timestamp': '30'},
     // Add more announcements as needed
   ];
 
@@ -43,7 +43,14 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                         announcements[index]['school'] ?? '',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      subtitle: Text(announcements[index]['announcement'] ?? ''),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(announcements[index]['announcement'] ?? ''),
+                          SizedBox(height: 5),
+                          Text(_calculateTimeAgo(int.parse(announcements[index]['timestamp'] ?? '0'))),
+                        ],
+                      ),
                     ),
                   );
                 },
@@ -72,7 +79,7 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
                       if (newAnnouncement.isNotEmpty) {
                         announcements.insert(
                           0,
-                          {'school': 'Sacred Heart Convent School', 'announcement': newAnnouncement},
+                          {'school': 'Sacred Heart Convent School', 'announcement': newAnnouncement, 'timestamp': '0'},
                         );
                         _announcementController.clear();
                       }
@@ -85,5 +92,13 @@ class _AnnouncementsScreenState extends State<AnnouncementsScreen> {
         ),
       ),
     );
+  }
+
+  String _calculateTimeAgo(int minutesAgo) {
+    String timeAgo = 'just now';
+    if (minutesAgo > 0) {
+      timeAgo = '$minutesAgo ${minutesAgo == 1 ? 'minute' : 'minutes'} ago';
+    }
+    return timeAgo;
   }
 }
