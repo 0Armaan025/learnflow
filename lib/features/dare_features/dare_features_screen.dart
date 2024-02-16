@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:learnflow/common/dare_feature_tile/dare_feature_tile.dart';
 import 'package:learnflow/features/dare_features/progress_creator/progress_creator_screen.dart';
+import 'package:learnflow/features/dare_features/unqiue_institution_management/institution_registration/institution_registration_screen.dart';
 import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
 
@@ -48,12 +49,17 @@ class _DareFeaturesScreenState extends State<DareFeaturesScreen> {
               const SizedBox(
                 height: 20,
               ),
-              DareFeatureTile(
-                titleText: "Unique Institution\nsystem",
-                bannerImage:
-                    'https://media.istockphoto.com/id/1460007178/photo/library-books-on-table-and-background-for-studying-learning-and-research-in-education-school.jpg?s=1024x1024&w=is&k=20&c=cuzIXmvKHLpoGxGIft9zCiTw-jeL0Gjp7UNZau0MNkk=',
-                descriptionText:
-                    "Have practical super edutracks to get practical knowledge!",
+              InkWell(
+                onTap: () {
+                  moveScreen(context, InstitutionRegistrationScreen());
+                },
+                child: DareFeatureTile(
+                  titleText: "Unique Institution\nsystem",
+                  bannerImage:
+                      'https://media.istockphoto.com/id/1460007178/photo/library-books-on-table-and-background-for-studying-learning-and-research-in-education-school.jpg?s=1024x1024&w=is&k=20&c=cuzIXmvKHLpoGxGIft9zCiTw-jeL0Gjp7UNZau0MNkk=',
+                  descriptionText:
+                      "Have practical super edutracks to get practical knowledge!",
+                ),
               ),
               const SizedBox(
                 height: 20,
