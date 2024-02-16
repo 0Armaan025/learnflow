@@ -30,7 +30,7 @@ class _ProgressCreatorScreenState extends State<ProgressCreatorScreen> {
     try {
       final source = isBookish ? 'Bookish' : 'Internet';
       final prompt =
-          'Please help me generate tracks with 3 steps, according to $subject subject, $difficulty difficulty, and $source source';
+          'Please help me generate educational content for $subject subject, $difficulty difficulty, and $source source';
 
       Dio dioClient = Dio();
       const url =
@@ -74,7 +74,7 @@ class _ProgressCreatorScreenState extends State<ProgressCreatorScreen> {
 
       final stepsPrompt = {
         'prompt': {
-          'text': 'What are the steps that can be followed for $questionTitle?'
+          'text': 'What are the steps or key concepts for $questionTitle?'
         },
       };
 
@@ -113,7 +113,7 @@ class _ProgressCreatorScreenState extends State<ProgressCreatorScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Let's help you for progress! :D",
+              "Let's help you with educational content! :D",
               style: GoogleFonts.poppins(fontSize: 22),
             ),
             const SizedBox(height: 10),
@@ -146,8 +146,7 @@ class _ProgressCreatorScreenState extends State<ProgressCreatorScreen> {
               decoration: InputDecoration(labelText: 'Difficulty Level'),
             ),
             const SizedBox(height: 15),
-           
-            
+
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () async {
@@ -198,8 +197,3 @@ class _ProgressCreatorScreenState extends State<ProgressCreatorScreen> {
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: ProgressCreatorScreen(),
-  ));
-}
