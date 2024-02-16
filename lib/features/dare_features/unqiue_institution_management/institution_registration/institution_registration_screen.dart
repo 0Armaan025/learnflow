@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:learnflow/common/constants/constants.dart';
+import 'package:learnflow/features/dare_features/unqiue_institution_management/institution_registration/institution_dashboard_screen.dart';
 import 'package:learnflow/features/database/institution/models/institution.dart';
 import 'package:learnflow/features/database/institution/repositories/institution_repository.dart';
 import 'package:learnflow/utils/pallete.dart';
@@ -83,8 +84,8 @@ class _InstitutionRegistrationScreenState
               Center(
                 child: InkWell(
                   onTap: () {
-                    registerInstitution();
-                    
+                    // registerInstitution();
+                    moveScreen(context, InstitutionDashboardScreen());
                   },
                   child: Container(
                     width: double.infinity,
