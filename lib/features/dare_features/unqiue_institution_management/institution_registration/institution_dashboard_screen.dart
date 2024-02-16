@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:learnflow/features/dare_features/unqiue_institution_management/announcements/announcements_screen.dart';
 import 'package:learnflow/utils/pallete.dart';
 import 'package:learnflow/utils/utils.dart';
 
@@ -54,27 +55,32 @@ class _InstitutionDashboardScreenState extends State<InstitutionDashboardScreen>
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  height: 180,
-                  width: 130,
-                  decoration: BoxDecoration(
-                    color: Colors.blueAccent[100],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  alignment: Alignment.center,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 30,),
-                      Icon(
-                        Icons.class_outlined,
-                        size: 60,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(height:30,),
-                      Center(
-                        child: Text("Announcements!",style: GoogleFonts.poppins(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 12,),),
-                      ),
-                    ],
+                InkWell(
+                  onTap: () {
+                    moveScreen(context, AnnouncementsScreen());
+                  },
+                  child: Container(
+                    height: 180,
+                    width: 130,
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent[100],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 30,),
+                        Icon(
+                          Icons.class_outlined,
+                          size: 60,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(height:30,),
+                        Center(
+                          child: Text("Announcements!",style: GoogleFonts.poppins(color: Colors.white,fontWeight: FontWeight.bold,fontSize: 12,),),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(width: 10),
